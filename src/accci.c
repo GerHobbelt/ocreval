@@ -32,8 +32,7 @@ Obslist obslist;
 
 /**********************************************************************/
 
-void process_file(filename)
-char *filename;
+void process_file(char *filename)
 {
     long chars, errors;
     chars  = accdata.characters;
@@ -43,7 +42,7 @@ char *filename;
 }
 /**********************************************************************/
 
-void write_results()
+void write_results(void)
 {
     double lower, upper;
     compute_ci(&obslist, &lower, &upper);
@@ -57,16 +56,17 @@ void write_results()
 }
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, const char **argv)
 {
     int i;
     initialize(&argc, argv, usage, NULL);
-    if (argc < 2)
-	error("not enough input files");
+    if (argc < 2) {
+		error("not enough input files");
+		return 1;
+	}
     for (i = 0; i < argc; i++)
 	process_file(argv[i]);
     write_results();
     terminate();
+	return 0;
 }

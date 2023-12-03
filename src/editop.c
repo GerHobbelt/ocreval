@@ -50,9 +50,7 @@ struct
 
 /**********************************************************************/
 
-void display(synclist, label)
-Synclist *synclist;
-char *label;
+void display(Synclist *synclist, char *label)
 {
     Sync *sync;
     printf("%-9s:", label);
@@ -62,9 +60,7 @@ char *label;
 }
 /**********************************************************************/
 
-void discard_sync(synclist, sync)
-Synclist *synclist;
-Sync *sync;
+void discard_sync(Synclist *synclist, Sync *sync)
 {
     list_remove(synclist, sync);
     free(sync->substr);
@@ -74,9 +70,7 @@ Sync *sync;
 }
 /**********************************************************************/
 
-void count_insertions(synclist, text)
-Synclist *synclist;
-Text *text;
+void count_insertions(Synclist *synclist, Text *text)
 {
     Sync *sync;
     long i;
@@ -88,8 +82,7 @@ Text *text;
 }
 /**********************************************************************/
 
-void count_deletions(synclist)
-Synclist *synclist;
+void count_deletions(Synclist *synclist)
 {
     Sync *sync, *next;
     sync = synclist->first;
@@ -106,9 +99,7 @@ Synclist *synclist;
 }
 /**********************************************************************/
 
-void decrement_match(synclist, limit)
-Synclist *synclist;
-long limit;
+void decrement_match(Synclist *synclist, long limit)
 {
     Sync *sync;
     for (sync = synclist->first; sync; sync = sync->next)
@@ -117,8 +108,7 @@ long limit;
 }
 /**********************************************************************/
 
-void combine_adjacent(synclist)
-Synclist *synclist;
+void combine_adjacent(Synclist *synclist)
 {
     Sync *sync, *next;
     sync = synclist->first;
@@ -139,8 +129,7 @@ Synclist *synclist;
 }
 /**********************************************************************/
 
-Candidate *find_candidates(synclist)
-Synclist *synclist;
+Candidate *find_candidates(Synclist *synclist)
 {
     Candidate *candidate;
     Sync *sync;
@@ -158,9 +147,7 @@ Synclist *synclist;
 }
 /**********************************************************************/
 
-Sync *find_move(synclist, candidate)
-Synclist *synclist;
-Candidate candidate[];
+Sync *find_move(Synclist *synclist, Candidate candidate[])
 {
     long i, reduction, move_i, move_length, move_reduction = 0;
     for (i = 1; i <= synclist->count; i++)
@@ -182,10 +169,7 @@ Candidate candidate[];
 }
 /**********************************************************************/
 
-void perform_move(synclist, candidate, sync)
-Synclist *synclist;
-Candidate candidate[];
-Sync *sync;
+void perform_move(Synclist *synclist, Candidate candidate[], Sync *sync)
 {
     short length;
     list_remove(synclist, sync);
@@ -205,8 +189,7 @@ Sync *sync;
 }
 /**********************************************************************/
 
-void count_moves(synclist)
-Synclist *synclist;
+void count_moves(Synclist *synclist)
 {
     Candidate *candidate;
     Sync *sync;
@@ -224,17 +207,19 @@ Synclist *synclist;
 }
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
     Synclist synclist1, synclist2;
     initialize(&argc, argv, usage, option);
-    if (argc < 2 || argc > 3)
-	error("invalid number of files");
+    if (argc < 2 || argc > 3) {
+		error("invalid number of files");
+		return 1;
+	}
     read_text(&text1, argv[0], &textopt);
-    if (textopt.found_header)
-	error("no correct file specified");
+    if (textopt.found_header) {
+		error("no correct file specified");
+		return 1;
+	}
     read_text(&text2, argv[1], &textopt);
     transpose_sync(&synclist1, &synclist2, &text1, &text2);
     count_insertions(&synclist1, &text1);
@@ -242,4 +227,5 @@ char *argv[];
     count_moves(&synclist2);
     write_edorpt(&edodata, (argc == 3 ? argv[2] : NULL));
     terminate();
+	return 0;
 }

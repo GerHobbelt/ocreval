@@ -37,9 +37,7 @@ Accdata accdata;
 
 /**********************************************************************/
 
-void make_key(key, sync)
-char *key;
-Sync *sync;
+void make_key(char *key, Sync *sync)
 {
     long i, j;
     char buffer[2][MAX_DISPLAY + 4], string[STRING_SIZE];
@@ -61,8 +59,7 @@ Sync *sync;
 }
 /**********************************************************************/
 
-void add_ops(sum_ops, ops)
-Accops *sum_ops, *ops;
+void add_ops(Accops *sum_ops, Accops *ops)
 {
     sum_ops->ins    += ops->ins;
     sum_ops->subst  += ops->subst;
@@ -71,8 +68,7 @@ Accops *sum_ops, *ops;
 }
 /**********************************************************************/
 
-void process_synclist(synclist)
-Synclist *synclist;
+void process_synclist(Synclist *synclist)
 {
     Sync *sync;
     long i, characters, wildcards, reject_characters, suspect_markers, genchars;
@@ -129,20 +125,23 @@ Synclist *synclist;
 }
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
     Synclist synclist;
     initialize(&argc, argv, usage, NULL);
-    if (argc < 2 || argc > 3)
-	error("invalid number of files");
+    if (argc < 2 || argc > 3) {
+		error("invalid number of files");
+		return 1;
+	}
     read_text(&text[0], argv[0], &textopt);
-    if (textopt.found_header)
-	error("no correct file specified");
+    if (textopt.found_header) {
+		error("no correct file specified");
+		return 1;
+	}
     read_text(&text[1], argv[1], &textopt);
     fastukk_sync(&synclist, text);
     process_synclist(&synclist);
     write_accrpt(&accdata, (argc == 3 ? argv[2] : NULL));
     terminate();
+	return 0;
 }

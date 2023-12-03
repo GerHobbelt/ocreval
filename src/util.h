@@ -51,6 +51,12 @@ typedef char Boolean;
 #define min(a, b)  ((a) < (b) ? (a) : (b))
 #endif
 
+#if defined(_MSC_VER)
+#ifndef __attribute__
+#define __attribute__(expr)		/**/
+#endif
+#endif
+
 #define NEW(type)  ((type *) allocate((size_t) 1, sizeof(type)))
 			/* allocate one instance of "type" */
 #define NEW_ARRAY(number, type) \

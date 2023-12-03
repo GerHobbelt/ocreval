@@ -32,8 +32,7 @@ Dist dist;
 
 /**********************************************************************/
 
-void process_file(filename)
-char *filename;
+void process_file(char *filename)
 {
     long chars, errors;
     chars  = accdata.characters;
@@ -43,14 +42,13 @@ char *filename;
 }
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
     int i;
     initialize(&argc, argv, usage, NULL);
     for (i = 0; i < argc; i++)
-	process_file(argv[i]);
+		process_file(argv[i]);
     write_dist(&dist, NULL);
     terminate();
+	return 0;
 }

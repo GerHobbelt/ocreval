@@ -45,19 +45,14 @@ static char line[LINE_LENGTH];
 
 /**********************************************************************/
 
-static void update_class(class, count, missed)
-Accclass *class;
-long count, missed;
+static void update_class(Accclass *class, long count, long missed)
 {
     class->count  += count;
     class->missed += missed;
 }
 /**********************************************************************/
 
-void add_class(accdata, value, count, missed)
-Accdata *accdata;
-Charvalue value;
-long count, missed;
+void add_class(Accdata *accdata, Charvalue value;, long count, long missed)
 {
     update_class(&accdata->large_class[charclass(value)], count, missed);
     update_class(&accdata->total_class, count, missed);
@@ -65,10 +60,7 @@ long count, missed;
 }
 /**********************************************************************/
 
-void add_conf(accdata, key, errors, marked)
-Accdata *accdata;
-char *key;
-long errors, marked;
+void add_conf(Accdata *accdata, char *key, long errors, long marked)
 {
     Conf *conf;
     conf = table_lookup(&accdata->conftable, key);
@@ -88,16 +80,13 @@ long errors, marked;
 }
 /**********************************************************************/
 
-static Boolean read_line(f)
-FILE *f;
+static Boolean read_line(FILE *f)
 {
     return(fgets(line, sizeof(line) - 1, f) ? True : False);
 }
 /**********************************************************************/
 
-static Boolean read_value(f, value, sum_value)
-FILE *f;
-long *value, *sum_value;
+static Boolean read_value(FILE *f, long *value, long *sum_value)
 {
     if (read_line(f) && sscanf(line, "%ld", value) == 1)
     {
@@ -109,9 +98,7 @@ long *value, *sum_value;
 }
 /**********************************************************************/
 
-static Boolean read_ops(f, sum_ops)
-FILE *f;
-Accops *sum_ops;
+static Boolean read_ops(FILE *f, Accops *sum_ops)
 {
     Accops ops;
     if (read_line(f) && sscanf(line, "%ld %ld %ld %ld", &ops.ins, &ops.subst,
@@ -128,17 +115,14 @@ Accops *sum_ops;
 }
 /**********************************************************************/
 
-static Boolean read_two(f, value1, value2)
-FILE *f;
-long *value1, *value2;
+static Boolean read_two(FILE *f, long *value1, long *value2)
 {
     return(read_line(f) && sscanf(line, "%ld %ld", value1, value2) == 2 ?
     True : False);
 }
 /**********************************************************************/
 
-static Charvalue read_char(line)
-char *line;
+static Charvalue read_char(char *line)
 {
     Charvalue value = INVALID_CHARVALUE;
     char *next_byte = line;
@@ -211,9 +195,7 @@ char *line;
 }
 /**********************************************************************/
 
-void read_accrpt(accdata, filename)
-Accdata *accdata;
-char *filename;
+void read_accrpt(Accdata *accdata, char *filename)
 {
     FILE *f;
     long characters, errors, value1, value2;
@@ -254,18 +236,13 @@ char *filename;
 }
 /**********************************************************************/
 
-static void write_value(f, value, string)
-FILE *f;
-long value;
-char *string;
+static void write_value(FILE *f, long value, char *string)
 {
     fprintf(f, "%8ld   %s\n", value, string);
 }
 /**********************************************************************/
 
-static void write_pct(f, numerator, denominator)
-FILE *f;
-long numerator, denominator;
+static void write_pct(FILE *f, long numerator, long denominator)
 {
     if (denominator == 0)
         fprintf(f, "  ------");
@@ -274,21 +251,14 @@ long numerator, denominator;
 }
 /**********************************************************************/
 
-static void write_ops(f, ops, string)
-FILE *f;
-Accops *ops;
-char *string;
+static void write_ops(FILE *f, Accops *ops, char *string)
 {
     fprintf(f, "%8ld %8ld %8ld %8ld   %s\n", ops->ins, ops->subst, ops->del,
     ops->errors, string);
 }
 /**********************************************************************/
 
-static void write_class(f, class, string, value)
-FILE *f;
-Accclass *class;
-char *string;
-Charvalue value;
+static void write_class(FILE *f, Accclass *class, char *string, Charvalue value)
 {
     char buffer[STRING_SIZE];
     fprintf(f, "%8ld %8ld ", class->count, class->missed);
@@ -303,16 +273,13 @@ Charvalue value;
 }
 /**********************************************************************/
 
-static void write_conf(f, conf)
-FILE *f;
-Conf *conf;
+static void write_conf(FILE *f, Conf *conf)
 {
     fprintf(f, "%8ld %8ld   %s", conf->errors, conf->marked, conf->key);
 }
 /**********************************************************************/
 
-static int compare_conf(conf1, conf2)
-Conf *conf1, *conf2;
+static int compare_conf(Conf *conf1, Conf *conf2)
 {
     if (conf1->errors != conf2->errors)
         return(conf2->errors - conf1->errors);
@@ -322,9 +289,7 @@ Conf *conf1, *conf2;
 }
 /**********************************************************************/
 
-void write_accrpt(accdata, filename)
-Accdata *accdata;
-char *filename;
+void write_accrpt(Accdata *accdata, char *filename)
 {
     FILE *f;
     long i;

@@ -36,9 +36,7 @@ long count, missed;
 
 /**********************************************************************/
 
-void find_stopword(termtable, string)
-Termtable *termtable;
-char *string;
+void find_stopword(Termtable *termtable, char *string)
 {
     Term *term;
     term = table_lookup(termtable, string);
@@ -50,14 +48,14 @@ char *string;
 }
 /**********************************************************************/
 
-void write_line()
+void write_line(void)
 {
     static long linenum = 0;
     printf("%3ld %6.2f\n", linenum++, 100.0 * (count - missed) / count);
 }
 /**********************************************************************/
 
-void write_results()
+void write_results(void)
 {
     Word *word;
     count  = wacdata.total.count;
@@ -67,25 +65,26 @@ void write_results()
     write_line();
     for (word = wordlist.first; word; word = word->next)
     {
-	find_stopword(&wacdata.stopword_table, word->string);
-	find_stopword(&wacdata.non_stopword_table, word->string);
-	if (count == 0)
-	    return;
-	write_line();
+		find_stopword(&wacdata.stopword_table, word->string);
+		find_stopword(&wacdata.non_stopword_table, word->string);
+		if (count == 0)
+			return;
+		write_line();
     }
 }
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, const char **argv)
 {
     initialize(&argc, argv, usage, NULL);
-    if (argc != 2)
-	error("invalid number of files");
+    if (argc != 2) {
+		error("invalid number of files");
+		return 1;
+	}
     read_text(&text, argv[0], &textopt);
     find_words(&wordlist, &text);
     read_wacrpt(&wacdata, argv[1]);
     write_results();
     terminate();
+	return 0;
 }

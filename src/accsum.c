@@ -30,16 +30,17 @@ Accdata accdata;
 
 /**********************************************************************/
 
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
     int i;
     initialize(&argc, argv, usage, NULL);
-    if (argc < 2)
-	error("not enough input files");
+    if (argc < 2) {
+		error("not enough input files");
+		return 1;
+	}
     for (i = 0; i < argc; i++)
 	read_accrpt(&accdata, argv[i]);
     write_accrpt(&accdata, NULL);
     terminate();
+	return 0;
 }
